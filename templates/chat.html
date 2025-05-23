@@ -1,71 +1,110 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Register | Aether76 AI</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #1e1e2f;
-            color: #f4f4f4;
-            display: flex;
-            height: 100vh;
-            justify-content: center;
-            align-items: center;
-        }
-        .register-box {
-            background: #2a2a3d;
-            padding: 40px;
-            border-radius: 10px;
-            width: 300px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
-        }
-        .register-box h2 {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 6px;
-        }
-        button {
-            width: 100%;
-            background-color: #00bfa6;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .login-link {
-            text-align: center;
-            margin-top: 15px;
-        }
-        .error {
-            color: #ff5252;
-            font-size: 14px;
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aether76 AI Chatbot</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .logo {
+      width: 80px;
+      height: auto;
+    }
+
+    .chat-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #1e1e2f;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      height: 70vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #chat-box {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      padding: 10px;
+      background: #2a2a3d;
+      border-radius: 5px;
+    }
+
+    .input-container {
+      display: flex;
+    }
+
+    #user-input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 5px 0 0 5px;
+      border: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #00adb5;
+      color: white;
+      font-weight: bold;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #007a80;
+    }
+  </style>
 </head>
 <body>
-    <div class="register-box">
-        <h2>Daftar Aether76 AI</h2>
-        {% if error %}
-        <div class="error">{{ error }}</div>
-        {% endif %}
-        <form method="POST">
-            <input type="text" name="username" placeholder="Username" required />
-            <input type="password" name="password" placeholder="Password (min 6)" required />
-            <button type="submit">Daftar</button>
-        </form>
-        <div class="login-link">
-            <a href="{{ url_for('login') }}">Sudah punya akun? Login</a>
-        </div>
+  <div class="header">
+    <img src="logo.png" alt="Aether76 AI Logo" class="logo" />
+    <h1>Aether76 AI</h1>
+  </div>
+
+  <div class="chat-container">
+    <div id="chat-box"></div>
+    <div class="input-container">
+      <input type="text" id="user-input" placeholder="Tulis pesan..." />
+      <button onclick="sendMessage()">Kirim</button>
     </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+
+    async function sendMessage() {
+      const input = document.getElementById("user-input");
+      const userText = input.value.trim();
+      if (!userText) return;
+
+      chatBox.innerHTML += `<div><strong>Kamu:</strong> ${userText}</div>`;
+      input.value = "";
+
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: userText })
+      });
+
+      const data = await res.json();
+      chatBox.innerHTML += `<div><strong>Bot:</strong> ${data.reply}</div>`;
+    }
+  </script>
 </body>
 </html>
